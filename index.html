@@ -301,20 +301,20 @@ const KEYWORDS = [
 const SN_DESIGNATION_RE = /\b(sn|at)\s?20\d\d[a-z]{1,4}\b|\bsn\s?19\d\d[a-z]?\b/i;
 const SN_WORD_RE = /\bsn\b/;
 const SECTIONS = [
-  {key:"summary",     emoji:"🌟",label:"Plain English Summary",color:"#e86b3a"},
-  {key:"data",        emoji:"🔭",label:"The Data",             color:"#4ab3e0"},
-  {key:"methods",     emoji:"⚙️",label:"Methods & Models",     color:"#e8c23a"},
-  {key:"results",     emoji:"📊",label:"Key Results",          color:"#e86b3a"},
-  {key:"conclusions", emoji:"🎯",label:"Conclusions",          color:"#4ab3e0"},
-  {key:"notes",       emoji:"⚠️",label:"Things to Note",       color:"#e8c23a"},
+  {key:"summary",     ,label:"Plain English Summary",color:"#e86b3a"},
+  {key:"data",        ,label:"The Data",             color:"#4ab3e0"},
+  {key:"methods",     ,label:"Methods & Models",     color:"#e8c23a"},
+  {key:"results",     ,label:"Key Results",          color:"#e86b3a"},
+  {key:"conclusions", ,label:"Conclusions",          color:"#4ab3e0"},
+  {key:"notes",       ,label:"Things to Note",       color:"#e8c23a"},
 ];
 const MARKERS = {
-  summary:"🌟 PLAIN ENGLISH SUMMARY",
-  data:"🔭 THE DATA",
-  methods:"⚙️ METHODS AND MODELS",
-  results:"📊 KEY RESULTS",
-  conclusions:"🎯 CONCLUSIONS AND SIGNIFICANCE",
-  notes:"⚠️ THINGS TO NOTE",
+  summary:"PLAIN ENGLISH SUMMARY",
+  data:"THE DATA",
+  methods:"METHODS AND MODELS",
+  results:"KEY RESULTS",
+  conclusions:"CONCLUSIONS AND SIGNIFICANCE",
+  notes:"THINGS TO NOTE",
 };
 const BACKEND_DESCS = {
   claude:"Uses Anthropic's Claude API. Best quality. Paid (~$0.003/analysis). If running inside Claude.ai as an artifact, no key is needed.",
@@ -598,22 +598,22 @@ ABSTRACT: ${abstract}
 
 Use EXACTLY these section headers (keep the emoji):
 
-🌟 PLAIN ENGLISH SUMMARY
+PLAIN ENGLISH SUMMARY
 3-4 sentences. What is this paper about and why does it matter? Use an analogy.
 
-🔭 THE DATA
+THE DATA
 Telescopes/instruments. Wavelengths (radio, optical, X-ray…). Number of objects. Time coverage.
 
-⚙️ METHODS AND MODELS
+METHODS AND MODELS
 Main technique in plain words. Physical models described without equations. Software mentioned. Key assumptions.
 
-📊 KEY RESULTS
+KEY RESULTS
 3-5 most important numbers or findings. What does each mean physically?
 
-🎯 CONCLUSIONS AND SIGNIFICANCE
+CONCLUSIONS AND SIGNIFICANCE
 What do the authors conclude? Major advance or incremental step? Bigger picture?
 
-⚠️ THINGS TO NOTE
+THINGS TO NOTE
 Caveats or limitations. Anything surprising. Define 2-3 jargon terms I should look up.`;
 }
 
@@ -657,7 +657,7 @@ async function streamClaude(title,abstract,onChunk) {
 async function streamGemini(title,abstract,key,onChunk) {
   const prompt=SYSTEM_PROMPT+"\n\n"+analysisUserPrompt(title,abstract);
   const res=await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:streamGenerateContent?key=${key}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?key=${key}`,
     {method:"POST",headers:{"Content-Type":"application/json"},
      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:1200}})}
   );
