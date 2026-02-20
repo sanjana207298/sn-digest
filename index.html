@@ -7,6 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <!-- KaTeX — renders LaTeX math like $M_\odot$ as proper symbols -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="window.katexReady = true"></script>
   <style>
     /* ── Reset & Variables ─────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -397,6 +403,10 @@
     }
     .toast.show { opacity: 1; transform: translateY(0); }
 
+
+    /* ── KaTeX overrides — make math fit the dark theme ─────────────────── */
+    .katex { color: var(--text); font-size: 1em; }
+
     /* ── Responsive ──────────────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .hdr, .controls, .sec-hdr, .papers, .panel { padding-left: 12px; padding-right: 12px; }
@@ -645,6 +655,29 @@ let currentBackend = "none";
 // Per-paper analysis state: { [arxivId]: { raw, streaming, done, error } }
 let analysisState = {};
 
+
+// ═════════════════════════════════════════════════════════════════════════════
+//  KATEX MATH RENDERING
+//  Called after any HTML is written that might contain $...$ or $$...$$
+// ═════════════════════════════════════════════════════════════════════════════
+
+function renderMath(el) {
+  if (!el) return;
+  if (window.katexReady && window.renderMathInElement) {
+    renderMathInElement(el, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true  },
+        { left: "$",  right: "$",  display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true  },
+      ],
+      throwOnError: false,
+    });
+  } else {
+    setTimeout(() => renderMath(el), 200);
+  }
+}
+
 // ═════════════════════════════════════════════════════════════════════════════
 //  INIT
 // ═════════════════════════════════════════════════════════════════════════════
@@ -776,9 +809,9 @@ async function fetchPapers() {
       `abs:"GRB-SN" OR abs:"SN 20" OR abs:"AT 20")`
     );
     const url = `https://export.arxiv.org/api/query?search_query=${query}` +
-            `&sortBy=submittedDate&sortOrder=descending&max_results=80&start=0`;
+                `&sortBy=submittedDate&sortOrder=descending&max_results=80&start=0`;
 
-    const res  = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(url)}`);
+    const res  = await fetch(url);
     if (!res.ok) throw new Error(`arXiv returned status ${res.status}`);
     const text = await res.text();
     const xml  = new DOMParser().parseFromString(text, "text/xml");
@@ -943,7 +976,7 @@ function buildCard(paper, idx) {
 
         <!-- ABSTRACT PANE -->
         <div class="tpane active" id="pane-abstract-${id}">
-          <p class="abstract">${escHtml(paper.abstract)}</p>
+          <p class="abstract" id="abstract-text-${id}">${escHtml(paper.abstract)}</p>
           <div class="links-row">
             <a class="alink" href="${paper.url}" target="_blank" rel="noreferrer">arXiv:${id}</a>
             <a class="alink" href="${paper.pdfUrl}" target="_blank" rel="noreferrer">PDF</a>
@@ -968,8 +1001,9 @@ function toggleCard(id) {
   const expand = document.getElementById("expand-" + id);
   const open   = body.classList.toggle("open");
   expand.classList.toggle("open", open);
-  if (open && analysisState[id].tab === "analysis") {
-    renderAnalysisPane(id);
+  if (open) {
+    renderMath(document.getElementById("abstract-text-" + id));
+    if (analysisState[id].tab === "analysis") renderAnalysisPane(id);
   }
 }
 
@@ -1056,6 +1090,7 @@ function renderAnalysisPane(id) {
   }
 
   container.innerHTML = html;
+  renderMath(container);
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -1065,7 +1100,8 @@ function renderAnalysisPane(id) {
 const SYSTEM_PROMPT =
   `You are an expert astrophysicist and gifted science communicator helping a newcomer ` +
   `to supernova research understand papers. Be concrete, honest about uncertainty, ` +
-  `and use analogies where helpful. Never use LaTeX or jargon without explanation.`;
+  `and use analogies where helpful. When writing math, use LaTeX notation with $ delimiters ` +
+  `(e.g. $M_\\odot$, $10^{51}$ erg) — it will be rendered properly for the reader.`;
 
 function analysisUserPrompt(title, abstract) {
   return `I am new to supernova astrophysics. Please analyse this paper so I can learn from it.
