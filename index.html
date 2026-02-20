@@ -776,9 +776,9 @@ async function fetchPapers() {
       `abs:"GRB-SN" OR abs:"SN 20" OR abs:"AT 20")`
     );
     const url = `https://export.arxiv.org/api/query?search_query=${query}` +
-                `&sortBy=submittedDate&sortOrder=descending&max_results=80&start=0`;
+            `&sortBy=submittedDate&sortOrder=descending&max_results=80&start=0`;
 
-    const res  = await fetch(url);
+    const res  = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(url)}`);
     if (!res.ok) throw new Error(`arXiv returned status ${res.status}`);
     const text = await res.text();
     const xml  = new DOMParser().parseFromString(text, "text/xml");
