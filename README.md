@@ -20,9 +20,7 @@ No installation. No backend. Just open the link.
 
 ## Live app
 
-👉 **[yourusername.github.io/sn-digest](https://yourusername.github.io/sn-digest)**
-
-*(replace with your actual GitHub Pages URL after setup)*
+**[sanjana207298.github.io/sn-digest](https://sanjana207298.github.io/sn-digest)**
 
 ---
 
