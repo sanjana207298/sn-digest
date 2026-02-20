@@ -9,7 +9,7 @@ Built for researchers (especially newcomers) who want to stay on top of the supe
 ## What it does
 
 - **Fetches** the latest supernova papers from arXiv every time you open it
-- **Filters** by a curated keyword list (supernova, core-collapse, Ic-BL, kilonova, SLSN, GRB-SN, SN designations like SN 2023ixf, and more)
+- **Filters** by a curated keyword list (supernova, core-collapse, Ic-BL, SLSN, GRB-SN, and more)
 - **Tracks** which papers you've already seen — new ones are highlighted, old ones dimmed
 - **Explains** each paper in plain English using Claude (Anthropic) or Gemini Flash (Google)
 - **Exports** any paper + its AI analysis as a Markdown file, ready to paste into Obsidian, Notion, or any notes app
@@ -34,17 +34,7 @@ git clone https://github.com/yourusername/sn-digest.git
 
 Or just download `index.html` — that's the entire app.
 
-### 2. Enable GitHub Pages
-
-1. Go to your repo on GitHub
-2. **Settings** → **Pages**
-3. Under *Source*, select **Deploy from a branch**
-4. Choose **main** branch, **/ (root)** folder
-5. Click **Save**
-
-GitHub will give you a URL like `https://yourusername.github.io/sn-digest` within a minute.
-
-### 3. Get a free AI key (optional but recommended)
+### 2. Get a free AI key 
 
 The app works without any key — you can browse abstracts and arXiv links for free. For AI-generated explanations, you need one of:
 
@@ -59,9 +49,9 @@ The app works without any key — you can browse abstracts and arXiv links for f
 - ~$0.003 per paper analysis (very cheap)
 - Better quality explanations
 
-### 4. Enter your key in the app
+### 3. Enter your key in the app
 
-Open the app → click **Settings** → choose your backend → paste your key → it saves automatically in your browser. You never need to enter it again.
+Open the app → click **Settings** → choose your backend → paste your key → it saves automatically in your browser. 
 
 **Your key is stored only in your browser's local storage. It is never sent to GitHub or any server — only directly to the API you chose.**
 
