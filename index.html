@@ -295,18 +295,17 @@ const KEYWORDS = [
   "type ia","type ib","type ic",
   "core-collapse","ccsn","ic-bl",
   "grb-sn","gamma-ray burst supernova",
-  "kilonova","slsn","superluminous",
-  "thermonuclear supernova","csm interaction","nebular phase",
+  "kilonova","slsn","superluminous","csm interaction",
 ];
 const SN_DESIGNATION_RE = /\b(sn|at)\s?20\d\d[a-z]{1,4}\b|\bsn\s?19\d\d[a-z]?\b/i;
 const SN_WORD_RE = /\bsn\b/;
 const SECTIONS = [
-  {key:"summary",     ,label:"Plain English Summary",color:"#e86b3a"},
-  {key:"data",        ,label:"The Data",             color:"#4ab3e0"},
-  {key:"methods",     ,label:"Methods & Models",     color:"#e8c23a"},
-  {key:"results",     ,label:"Key Results",          color:"#e86b3a"},
-  {key:"conclusions", ,label:"Conclusions",          color:"#4ab3e0"},
-  {key:"notes",       ,label:"Things to Note",       color:"#e8c23a"},
+  {key:"summary",     label:"Plain English Summary",color:"#e86b3a"},
+  {key:"data",        label:"The Data",             color:"#4ab3e0"},
+  {key:"methods",     label:"Methods & Models",     color:"#e8c23a"},
+  {key:"results",     label:"Key Results",          color:"#e86b3a"},
+  {key:"conclusions", label:"Conclusions",          color:"#4ab3e0"},
+  {key:"notes",       label:"Things to Note",       color:"#e8c23a"},
 ];
 const MARKERS = {
   summary:"PLAIN ENGLISH SUMMARY",
