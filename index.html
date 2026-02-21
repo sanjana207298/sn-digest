@@ -421,6 +421,8 @@ async function fetchPapers() {
       u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
       u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
       u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+      u => `https://thingproxy.freeboard.io/fetch/${u}`,
+      u => `https://proxy.cors.sh/${u}`,
     ];
     let res, lastErr;
     for (const proxy of proxies) {
