@@ -47,7 +47,6 @@ The app works without any key — you can browse abstracts and arXiv links for f
 - Go to [console.anthropic.com](https://console.anthropic.com)
 - Create an account and add billing
 - ~$0.003 per paper analysis (very cheap)
-- Better quality explanations
 
 ### 3. Enter your key in the app
 
