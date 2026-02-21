@@ -417,8 +417,16 @@ async function fetchPapers() {
                      `&sortBy=submittedDate&sortOrder=descending&max_results=80&start=0`;
 
     // corsproxy.io relays the request — required because arXiv blocks direct browser requests
-    const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(arxivUrl)}`);
-    if(!res.ok) throw new Error(`arXiv returned status ${res.status}`);
+    const proxies = [
+      u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+      u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+      u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    ];
+    let res, lastErr;
+    for (const proxy of proxies) {
+      try { res = await fetch(proxy(arxivUrl)); if(res.ok) break; } catch(e) { lastErr=e; }
+    }
+    if(!res||!res.ok) throw new Error(`arXiv unavailable (tried 3 proxies). Try again in a minute.`);
 
     const text=await res.text();
     const xml=new DOMParser().parseFromString(text,"text/xml");
@@ -574,7 +582,7 @@ function renderAnalysisPane(id) {
     SECTIONS.forEach((sec,si)=>{
       const content=parsed[sec.key], isLast=si===SECTIONS.length-1;
       const bodyClass=content?(state.streaming&&isLast?"ablock-body cursor":"ablock-body"):"ablock-body pending";
-      html+=`<div class="ablock"><div class="ablock-hdr"><span class="ablock-icon">${sec.emoji}</span><span class="ablock-label" style="color:${sec.color}">${sec.label}</span></div><div class="${bodyClass}">${escHtml(content||(state.streaming?"…":""))}</div></div>`;
+      html+=`<div class="ablock"><div class="ablock-hdr"><span class="ablock-label" style="color:${sec.color}">${sec.label}</span></div><div class="${bodyClass}">${escHtml(content||(state.streaming?"…":""))}</div></div>`;
     });
     html+=`</div>`;
   }
