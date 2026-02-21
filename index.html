@@ -417,7 +417,7 @@ async function fetchPapers() {
                      `&sortBy=submittedDate&sortOrder=descending&max_results=80&start=0`;
 
     // corsproxy.io relays the request — required because arXiv blocks direct browser requests
-    const res = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(arxivUrl)}`);
+    const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(arxivUrl)}`);
     if(!res.ok) throw new Error(`arXiv returned status ${res.status}`);
 
     const text=await res.text();
