@@ -414,7 +414,7 @@ async function fetchPapers() {
       `abs:"GRB-SN" OR abs:"SN 20" OR abs:"AT 20")`
     );
     const arxivUrl = `https://export.arxiv.org/api/query?search_query=${query}`+
-                     `&sortBy=submittedDate&sortOrder=descending&max_results=80&start=0`;
+                     `&sortBy=submittedDate&sortOrder=descending&max_results=25&start=0`;
 
     // corsproxy.io relays the request — required because arXiv blocks direct browser requests
     const proxies = [
