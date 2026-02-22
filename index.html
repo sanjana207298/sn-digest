@@ -584,7 +584,7 @@ function renderAnalysisPane(id) {
     SECTIONS.forEach((sec,si)=>{
       const content=parsed[sec.key], isLast=si===SECTIONS.length-1;
       const bodyClass=content?(state.streaming&&isLast?"ablock-body cursor":"ablock-body"):"ablock-body pending";
-      html+=`<div class="ablock"><div class="ablock-hdr"><span class="ablock-label" style="color:${sec.color}">${sec.label}</span></div><div class="${bodyClass}">${escHtml(content||(state.streaming?"…":""))}</div></div>`;
+      html+=`<div class="ablock"><div class="ablock-hdr"><span class="ablock-label" style="color:${sec.color}">${sec.label}</span></div><div class="${bodyClass}">${renderMarkdown(content||(state.streaming?"…":""))}</div></div>`;
     });
     html+=`</div>`;
   }
@@ -597,7 +597,8 @@ const SYSTEM_PROMPT =
   `You are an expert astrophysicist and gifted science communicator helping a newcomer `+
   `to supernova research understand papers. Be concrete, honest about uncertainty, `+
   `and use analogies where helpful. When writing math, use LaTeX notation with $ delimiters `+
-  `(e.g. $M_\\odot$, $10^{51}$ erg) — it will be rendered properly for the reader.`;
+  `(e.g. $M_\\odot$, $10^{51}$ erg) — it will be rendered properly for the reader.`+
+  `Do not use emojis anywhere in your response.`;
 
 function analysisUserPrompt(title,abstract) {
   return `I am new to supernova astrophysics. Please analyse this paper so I can learn from it.
@@ -605,7 +606,7 @@ function analysisUserPrompt(title,abstract) {
 TITLE: ${title}
 ABSTRACT: ${abstract}
 
-Use EXACTLY these section headers (keep the emoji):
+Use EXACTLY these section headers (no emojis):
 
 PLAIN ENGLISH SUMMARY
 3-4 sentences. What is this paper about and why does it matter? Use an analogy.
@@ -733,7 +734,7 @@ function exportPaper(id) {
   md+=`---\n\n## Abstract\n\n> ${paper.abstract}\n\n`;
   if(state?.raw) {
     md+=`---\n\n## Analysis\n\n`;
-    for(const sec of SECTIONS) { const c=parsed[sec.key]; if(c) md+=`### ${sec.emoji} ${sec.label}\n\n${c}\n\n`; }
+    for(const sec of SECTIONS) { const c=parsed[sec.key]; if(c) md+=`### ${sec.label}\n\n${c}\n\n`; }
   }
   md+=`---\n*Exported from SN·digest · ${todayUTC()}*\n`;
   navigator.clipboard.writeText(md).then(()=>showToast("✓ Copied to clipboard as Markdown"))
@@ -745,6 +746,11 @@ function setStatus(msg,cls) { const el=document.getElementById("statusMsg"); el.
 let toastTimer;
 function showToast(msg) { const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),3000); }
 function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function renderMarkdown(s) {
+  return escHtml(s)
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g,"<em>$1</em>");
+}
 </script>
 </body>
 </html>
